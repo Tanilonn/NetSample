@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NetSample.Models;
-using NetSample.SampleService;
+using NetSample.SampleService.Repositories;
 
 namespace NetSample.Controllers
 {
@@ -8,11 +8,11 @@ namespace NetSample.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly BookRepository _context;
+        private readonly IBookRepository _repo;
 
-        public BookController(BookRepository context)
+        public BookController(IBookRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         //// GET: api/Book
@@ -26,7 +26,7 @@ namespace NetSample.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = await _context.GetBookAsync(id);
+            var book = await _repo.GetBookAsync(id);
 
             if (book == null)
             {

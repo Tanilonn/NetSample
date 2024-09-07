@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetSample.Data;
+using NetSample.Database;
 using NetSample.Database.Models;
 
-namespace NetSample.SampleService
+namespace NetSample.SampleService.Repositories
 {
-    public class BookRepository
+    public class BookRepository : IBookRepository
     {
         private NetSampleContext context;
 
@@ -12,10 +12,10 @@ namespace NetSample.SampleService
         {
             this.context = context;
         }
-        
-        public async Task<Book> GetBookAsync(int id)
+
+        public async Task<Book?> GetBookAsync(int id)
         {
-            return await context.Books.SingleAsync(b => b.Id == id);
+            return await context.Books.SingleOrDefaultAsync(b => b.Id == id);
         }
     }
 }

@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NetSample.Database\NetSample.Database.csproj" />
     <ProjectReference Include="..\NetSample.SampleService\NetSample.SampleService.csproj" />
   </ItemGroup>
 

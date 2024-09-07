@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetSample.Database.Models;
 
-namespace NetSample.Data
+namespace NetSample.Database
 {
     public class NetSampleContext : DbContext
     {
-        public NetSampleContext (DbContextOptions<NetSampleContext> options)
+        public NetSampleContext(DbContextOptions<NetSampleContext> options)
             : base(options)
         {
         }

@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using NetSample.Data;
+using NetSample.Database;
+using NetSample.SampleService;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<NetSampleContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NetSampleContext") ?? throw new InvalidOperationException("Connection string 'NetSampleContext' not found.")));
 
 // Add services to the container.
-
+builder.Services.AddSampleServiceServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
