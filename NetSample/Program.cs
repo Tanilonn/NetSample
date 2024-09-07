@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NetSample.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<NetSampleContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NetSampleContext") ?? throw new InvalidOperationException("Connection string 'NetSampleContext' not found.")));
 
 // Add services to the container.
 
