@@ -6,16 +6,33 @@ namespace NetSample.SampleService.Repositories
 {
     public class BookRepository : IBookRepository
     {
-        private NetSampleContext context;
+        private readonly NetSampleContext _context;
 
         public BookRepository(NetSampleContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public async Task<Book?> GetBookAsync(int id)
+        public async Task<Book?> GetBookAsync(string title)
         {
-            return await context.Books.SingleOrDefaultAsync(b => b.Id == id);
+            return await _context.Books.Include(b => b.Author).SingleOrDefaultAsync(b => b.Title.ToLower() == title.ToLower());
         }
+
+        public async Task<Book> AddBookAsync(Book book)
+        {
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+
+            return book;
+        }
+
+        public async Task DeleteBook(Book book)
+        {
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+
+            return;
+        }
+
     }
 }

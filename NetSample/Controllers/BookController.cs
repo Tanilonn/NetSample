@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using NetSample.Models;
 using NetSample.SampleService.Repositories;
 
@@ -9,102 +10,47 @@ namespace NetSample.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookRepository _repo;
+        private readonly IMapper _mapper;
 
-        public BookController(IBookRepository repo)
+        public BookController(IBookRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
-        //// GET: api/Book
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
-        //{
-        //    return await _context.Books.ToListAsync();
-        //}
-
-        // GET: api/Book/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        [HttpGet("{title}")]
+        public async Task<ActionResult<Book>> GetBook(string title)
         {
-            var book = await _repo.GetBookAsync(id);
+            var book = await _repo.GetBookAsync(title);
 
             if (book == null)
             {
                 return NotFound();
             }
 
-            return new Book
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Author = new Author
-                {
-                    Name = book.Author.Name,
-                }
-            };
+            return _mapper.Map<Book>(book);
         }
 
-        //// PUT: api/Book/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutBook(int id, Book book)
-        //{
-        //    if (id != book.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPost]
+        public async Task<ActionResult<Book>> PostBook(Book book)
+        {
+            await _repo.AddBookAsync(_mapper.Map<Database.Models.Book>(book));
 
-        //    _context.Entry(book).State = EntityState.Modified;
+            return CreatedAtAction("GetBook", new { title = book.Title }, book);
+        }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!BookExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+        [HttpDelete("{title}")]
+        public async Task<IActionResult> DeleteBook(string title)
+        {
+            var book = await _repo.GetBookAsync(title);
+            if (book == null)
+            {
+                return NotFound();
+            }
 
-        //    return NoContent();
-        //}
+            await _repo.DeleteBook(book);
 
-        //// POST: api/Book
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Book>> PostBook(Book book)
-        //{
-        //    _context.Books.Add(book);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetBook", new { id = book.Id }, book);
-        //}
-
-        //// DELETE: api/Book/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteBook(int id)
-        //{
-        //    var book = await _context.Books.FindAsync(id);
-        //    if (book == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Books.Remove(book);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool BookExists(int id)
-        //{
-        //    return _context.Books.Any(e => e.Id == id);
-        //}
+            return NoContent();
+        }
     }
 }

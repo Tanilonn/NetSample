@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NetSample.Database;
+using NetSample.Mappers;
 using NetSample.SampleService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ builder.Services.AddDbContext<NetSampleContext>(options =>
 
 // Add services to the container.
 builder.Services.AddSampleServiceServices();
+builder.Services.AddAutoMapper(typeof(BookMappings));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

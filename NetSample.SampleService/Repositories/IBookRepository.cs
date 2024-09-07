@@ -4,6 +4,10 @@ namespace NetSample.SampleService.Repositories
 {
     public interface IBookRepository
     {
-        Task<Book?> GetBookAsync(int id);
+        Task<Book?> GetBookAsync(string title);
+
+        Task<Book> AddBookAsync(Book book);
+
+        Task DeleteBook(Book book);
     }
 }
