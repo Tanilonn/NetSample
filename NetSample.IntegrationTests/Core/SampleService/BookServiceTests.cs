@@ -1,4 +1,5 @@
 ﻿using NetSample.Database;
+using NetSample.IntegrationTests.Builders;
 using NetSample.SampleService.Repositories;
 using NetSample.SampleService.Services;
 
@@ -20,20 +21,17 @@ namespace NetSample.IntegrationTests.Core.SampleService
         {
             // Arrange
             var word = "magic";
-
-            await SeedBooksAsync(
-            [
-                new Database.Models.Book { Title = "First", Description = "This book talks about magic and more magic" },
-                new Database.Models.Book { Title = "Second", Description = "Another book that mentions magic once" },
-                new Database.Models.Book { Title = "Third", Description = "This book has no mention of that word" }
-            ]);
+            var mostMentionBook = new BookBuilder().WithDescription("This book talks about magic and more magic").Build();
+            var secondMostMention = new BookBuilder().WithDescription("Another book that mentions magic once").Build();
+            var noMentionBook = new BookBuilder().WithDescription("No mention").Build();
+            await SeedBooksAsync([ mostMentionBook, secondMostMention, noMentionBook]);
 
             // Act
             var result = await _bookService.MostFrequentMentionInDescriptionOf(word);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("First", result.Title);
+            Assert.Equal(mostMentionBook.Title, result.Title);
         }
 
         private async Task SeedBooksAsync(List<Database.Models.Book> books)
